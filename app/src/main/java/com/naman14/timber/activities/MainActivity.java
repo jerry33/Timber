@@ -337,22 +337,22 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         switch (menuItem.getItemId()) {
             case R.id.nav_library:
                 runnable = navigateLibrary;
-
+                menuItem.setChecked(true);
                 break;
             case R.id.nav_playlists:
                 runnable = navigatePlaylist;
-
+                menuItem.setChecked(true);
                 break;
             case R.id.nav_folders:
                 runnable = navigateFolder;
-
+                menuItem.setChecked(true);
                 break;
             case R.id.nav_nowplaying:
                 NavigationUtils.navigateToNowplaying(MainActivity.this, false);
                 break;
             case R.id.nav_queue:
                 runnable = navigateQueue;
-
+                menuItem.setChecked(true);
                 break;
             case R.id.nav_settings:
                 NavigationUtils.navigateToSettings(MainActivity.this);
@@ -365,7 +365,6 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
                 break;
             case R.id.nav_about:
                 runnable = navigateAbout;
-                mDrawerLayout.closeDrawers();
                 break;
             case R.id.nav_donate:
                 startActivity(new Intent(MainActivity.this, DonateActivity.class));
@@ -373,7 +372,6 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         }
 
         if (runnable != null) {
-            menuItem.setChecked(true);
             mDrawerLayout.closeDrawers();
         }
     }
