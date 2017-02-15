@@ -27,6 +27,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -142,6 +143,12 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
                     .replace(R.id.fragment_container, fragment).commit();
         }
     };
+    Runnable navigateAbout = new Runnable() {
+        @Override
+        public void run() {
+            Helpers.showAbout(MainActivity.this);
+        }
+    };
     private DrawerLayout mDrawerLayout;
     private boolean isDarkTheme;
 
@@ -168,6 +175,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         navigationMap.put(Constants.NAVIGATE_ARTIST, navigateArtist);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.addDrawerListener(getDrawerToggle());
+
         panelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -355,15 +364,8 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
                 startActivity(intent);
                 break;
             case R.id.nav_about:
+                runnable = navigateAbout;
                 mDrawerLayout.closeDrawers();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Helpers.showAbout(MainActivity.this);
-                    }
-                }, 350);
-
                 break;
             case R.id.nav_donate:
                 startActivity(new Intent(MainActivity.this, DonateActivity.class));
@@ -373,13 +375,6 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         if (runnable != null) {
             menuItem.setChecked(true);
             mDrawerLayout.closeDrawers();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    runnable.run();
-                }
-            }, 350);
         }
     }
 
@@ -442,6 +437,25 @@ public class MainActivity extends BaseActivity implements ATEActivityThemeCustom
         super.onActivityResult(requestCode, resultCode, data);
         getSupportFragmentManager().findFragmentById(R.id.fragment_container).onActivityResult(requestCode, resultCode, data);
     }
+
+    private ActionBarDrawerToggle getDrawerToggle() {
+        return new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                if (runnable != null) {
+                    runnable.run();
+                    runnable = null;
+                }
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+    }
+
 }
 
 
